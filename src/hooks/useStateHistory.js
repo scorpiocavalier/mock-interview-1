@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useOnChange } from './useOnChange'
 
 export const useStateHistory = ({
@@ -13,6 +13,7 @@ export const useStateHistory = ({
       resultsHistory.current.pop()
 
     resultsHistory.current.unshift(result)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ result ])
 

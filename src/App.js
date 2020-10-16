@@ -1,23 +1,24 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
+
 import { useOnChange } from './hooks/useOnChange'
-import './App.css'
 import { useStateHistory } from './hooks/useStateHistory'
 
 export default () => {
   const [ input, setInput ] = useState('')
   const [ result, setResult, resultsHistory ] = useStateHistory({})
   const [ isLoading, setIsLoading ] = useState(false)
-  const timerRef = useRef()
 
   useOnChange(() => {
-    timerRef.current = setTimeout(() => {
+    setIsLoading(true)
+
+    const timer = setTimeout(() => {
       setResult(input)
       setIsLoading(false)
     }, 2000)
 
     return () => {
-      clearTimeout(timerRef.current)
+      clearTimeout(timer)
     }
   }, [ input ])
 
