@@ -1,25 +1,27 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
-import { useOnChange } from './hooks/useOnChange'
-import { useStateHistory } from './hooks/useStateHistory'
+import useStateHistory from './hooks/useStateHistory'
+import useDebouncer from './hooks/useDebouncer'
+import useOnChange from './hooks/useOnChange'
 
 export default () => {
   const [ input, setInput ] = useState('')
-  const [ result, setResult, resultsHistory ] = useStateHistory({})
   const [ isLoading, setIsLoading ] = useState(false)
+  const [ result, setResult, resultsHistory ] = useStateHistory({})
+
+  let updateAndReset = () => {
+    setResult(input)
+    setInput('')
+  }
+
+  // Use the debounced version
+  updateAndReset = useDebouncer(updateAndReset, 500)
 
   useOnChange(() => {
     setIsLoading(true)
-
-    const timer = setTimeout(() => {
-      setResult(input)
-      setIsLoading(false)
-    }, 2000)
-
-    return () => {
-      clearTimeout(timer)
-    }
+    updateAndReset()
+    setIsLoading(false)
   }, [ input ])
 
   return (
@@ -57,7 +59,7 @@ const Section = styled.div`
   flex-direction: column;
   align-items: center;
   width: 80%;
-  min-height: 150px;
+  min-height: 200px;
   margin: 15px 0;
   padding-bottom: 30px;
   border: 2px solid slateblue;
